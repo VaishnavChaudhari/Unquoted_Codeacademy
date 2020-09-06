@@ -57,17 +57,79 @@ public class MainActivity extends AppCompatActivity {
 
 
         // TODO 4-E: set onClickListener for each answer Button
+        answer0Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                onAnswerSelected(0);
+            }
+        });
+        answer1Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onAnswerSelected(1);
+            }
+        });
+        answer2Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onAnswerSelected(2);
+            }
+        });
+        answer3Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onAnswerSelected(3);
+            }
+        });
 
         // TODO 5-A: set onClickListener for the submit answer Button
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onAnswerSubmission();
+            }
+        });
 
         startNewGame();
     }
 
     // TODO 3-F: displayQuestion(Question question) {...}
+    void displayQuestion(Question question){
+        questionImageView.setImageResource(question.imageId);
+        questionTextView.setText(question.questionText);
+        answer0Button.setText(question.answer0);
+        answer1Button.setText(question.answer1);
+        answer2Button.setText(question.answer2);
+        answer3Button.setText(question.answer3);
+
+    }
 
     // TODO 3-C: displayQuestionsRemaining(int questionRemaining) {...}
+    void displayQuestionsRemaining(int questionRemaining){
+        questionsRemainingTextView.setText(String.valueOf(questionRemaining));
+
+    }
 
     // TODO 4-A: onAnswerSelected(int answerSelected) {...}
+    void onAnswerSelected(int answerSelected){
+
+        Question currentQuestion =getCurrentQuestion();
+        currentQuestion.playerAnswer = answerSelected;
+        answer0Button.setText(currentQuestion.answer0);
+        answer1Button.setText(currentQuestion.answer1);
+        answer2Button.setText(currentQuestion.answer2);
+        answer3Button.setText(currentQuestion.answer3);
+        if (answerSelected == 0){
+            answer0Button.setText("✔" + currentQuestion.answer0 );
+        }else if (answerSelected == 1){
+            answer1Button.setText("✔" + currentQuestion.answer1 );
+        }else if (answerSelected == 2){
+            answer2Button.setText("✔" + currentQuestion.answer2 );
+        }else
+            answer3Button.setText("✔" + currentQuestion.answer3 );
+
+    }
 
     void onAnswerSubmission() {
         Question currentQuestion = getCurrentQuestion();
@@ -77,18 +139,27 @@ public class MainActivity extends AppCompatActivity {
         questions.remove(currentQuestion);
 
         // TODO 3-D.i: Uncomment the line below after implementing displayQuestionsRemaining(int)
-        // displayQuestionsRemaining(questions.size());
+         displayQuestionsRemaining(questions.size());
 
         if (questions.size() == 0) {
             String gameOverMessage = getGameOverMessage(totalCorrect, totalQuestions);
 
             // TODO 5-D: Show a popup instead
-            System.out.println(gameOverMessage);
+
+            AlertDialog.Builder gameOverDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+            gameOverDialogBuilder.setCancelable(false);
+            gameOverDialogBuilder.setMessage(gameOverMessage);
+            gameOverDialogBuilder.setPositiveButton("Play Again!", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    startNewGame();
+                }
+            });gameOverDialogBuilder.create().show();
         } else {
             chooseNewQuestion();
 
             // TODO 3-H.i: uncomment after implementing displayQuestion(Question)
-            // displayQuestion(getCurrentQuestion());
+             displayQuestion(getCurrentQuestion());
         }
     }
 
@@ -164,10 +235,10 @@ public class MainActivity extends AppCompatActivity {
         Question firstQuestion = chooseNewQuestion();
 
         // TODO 3-D.ii: Uncomment the line below after implementing displayQuestionsRemaining(int)
-        // displayQuestionsRemaining(questions.size());
+         displayQuestionsRemaining(questions.size());
 
         // TODO 3-H.ii: Uncomment after implementing displayQuestion(Question)
-        // displayQuestion(firstQuestion);
+        displayQuestion(firstQuestion);
     }
 
     Question chooseNewQuestion() {
